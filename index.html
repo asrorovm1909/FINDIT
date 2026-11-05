@@ -4,132 +4,217 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TOPILDI — Потерял? Найдём!</title>
-  <link rel="stylesheet" href="style.css">
+  <meta name="theme-color" content="#080d18">
+  <meta name="description" content="TOPILDI — сервис поиска потерянных и найденных вещей.">
+  <title>TOPILDI — Найди потерянное</title>
+  <link rel="stylesheet" href="style.css?v=1000">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-  <header class="topbar">
-    <a class="brand" href="#"><span class="brand-mark">T</span> TOPILDI</a>
-    <nav>
-      <a href="#listings" data-i18n="navListings">Объявления</a>
-      <a href="#how" data-i18n="navHow">Как это работает</a>
-    </nav>
-    <div class="header-actions">
-      <button class="lang active" data-lang="ru">RU</button>
-      <button class="lang" data-lang="uz">UZ</button>
-      <a class="btn btn-small" href="#post" data-i18n="postBtn">+ Подать объявление</a>
+
+<header class="topbar">
+  <a href="#" class="brand">
+    <span class="brand-mark">T</span>
+    TOPILDI
+  </a>
+
+  <nav>
+    <a href="#home" data-i18n="home">Главная</a>
+    <a href="#listings" data-i18n="listings">Объявления</a>
+    <a href="#how" data-i18n="how">Как работает</a>
+  </nav>
+
+  <div class="header-actions">
+    <button class="lang active" data-lang="ru">RU</button>
+    <button class="lang" data-lang="uz">UZ</button>
+    <button class="btn btn-small" id="authButton" data-i18n="login">Войти</button>
+    <button class="btn btn-small btn-ghost hidden" id="logoutButton" data-i18n="logout">Выйти</button>
+  </div>
+</header>
+
+<main>
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <div class="eyebrow"><span></span> TOPILDI — FIND IT</div>
+      <h1 data-i18n="heroTitle">Потерял? <em>Найдём!</em></h1>
+      <p data-i18n="heroText">Помогаем людям находить потерянные вещи и возвращать найденные владельцам.</p>
+      <div class="hero-actions">
+        <a href="#listings" class="btn" data-i18n="viewListings">Смотреть объявления</a>
+        <a href="#publish" class="btn btn-ghost" data-i18n="publish">Разместить объявление</a>
+      </div>
+      <div class="hero-note">✓ <span data-i18n="freeNote">Просто, удобно и бесплатно</span></div>
     </div>
-  </header>
 
-  <main>
-    <section class="hero">
-      <div class="hero-content">
-        <div class="eyebrow"><span></span><span data-i18n="eyebrow">СООБЩЕСТВО ПОМОЩИ</span></div>
-        <h1 data-i18n="heroTitle">Потерял? <em>Найдём.</em></h1>
-        <p data-i18n="heroText">Место, где потерянные вещи возвращаются к своим владельцам. Размести объявление — возможно, кто-то уже нашёл твою вещь.</p>
-        <div class="hero-actions">
-          <a class="btn" href="#listings" data-i18n="seeListings">Смотреть объявления</a>
-          <a class="btn btn-ghost" href="#post" data-i18n="createPost">Разместить бесплатно</a>
-        </div>
-        <div class="hero-note"><span class="live-dot"></span><span data-i18n="noAccount">Без регистрации и входа</span></div>
+    <div class="hero-art">
+      <div class="orbit orbit-one"></div>
+      <div class="orbit orbit-two"></div>
+      <div class="glass-card">
+        <div class="glass-icon">⌕</div>
+        <b>TOPILDI</b>
+        <small>LOST & FOUND</small>
+        <div class="glass-line"></div>
+        <div class="glass-bottom">● <span data-i18n="online">Сервис работает</span></div>
       </div>
-      <div class="hero-art">
-        <div class="orbit orbit-one"></div>
-        <div class="orbit orbit-two"></div>
-        <div class="glass-card">
-          <div class="glass-icon">⌕</div>
-          <b>TOPILDI</b>
-          <small data-i18n="heroBadge">Вещи находят дорогу домой</small>
-          <div class="glass-line"></div>
-          <div class="glass-bottom">● <span data-i18n="community">Помогаем друг другу</span></div>
-        </div>
-        <div class="float-tag tag-one">🔑 <span data-i18n="keys">Ключи</span></div>
-        <div class="float-tag tag-two">🎒 <span data-i18n="bag">Рюкзак</span></div>
+      <div class="float-tag tag-one">🔑 <span data-i18n="keys">Ключи</span></div>
+      <div class="float-tag tag-two">📱 <span data-i18n="phones">Телефоны</span></div>
+    </div>
+  </section>
+
+  <section class="stats">
+    <div><strong id="totalCount">0</strong><span data-i18n="total">Всего объявлений</span></div>
+    <div><strong id="lostCount">0</strong><span data-i18n="lost">Потеряно</span></div>
+    <div><strong id="foundCount">0</strong><span data-i18n="found">Найдено</span></div>
+  </section>
+
+  <section class="section" id="publish">
+    <div class="section-heading">
+      <div>
+        <div class="eyebrow dark">TOPILDI</div>
+        <h2 data-i18n="createTitle">Разместить объявление</h2>
       </div>
-    </section>
+    </div>
 
-    <section class="stats">
-      <div><strong>TOPILDI</strong><span data-i18n="statBrand">платформа находок</span></div>
-      <div><strong>01</strong><span data-i18n="statFree">Бесплатные объявления</span></div>
-      <div><strong>24/7</strong><span data-i18n="statOpen">Доступна каждому</span></div>
-    </section>
+    <div class="auth-panel" id="authPanel">
+      <h3 data-i18n="needLogin">Войдите, чтобы разместить объявление</h3>
+      <p data-i18n="needLoginText">Вход осуществляется по электронной почте и коду подтверждения.</p>
+      <button class="btn" id="authPanelButton" data-i18n="login">Войти</button>
+    </div>
 
-    <section class="section" id="post">
-      <div class="section-heading">
-        <div><span class="eyebrow dark" data-i18n="postEyebrow">ПОМОГИ ВЕЩИ НАЙТИСЬ</span><h2 data-i18n="postTitle">Подать объявление</h2></div>
-        <span class="section-count" data-i18n="freeLabel">БЕСПЛАТНО</span>
+    <form class="post-form hidden" id="listingForm">
+      <div class="type-switch">
+        <label class="type-option selected">
+          <input type="radio" name="type" value="lost" checked>
+          <span>🔴</span><b data-i18n="lostType">Потерял</b>
+        </label>
+        <label class="type-option">
+          <input type="radio" name="type" value="found">
+          <span>🟢</span><b data-i18n="foundType">Нашёл</b>
+        </label>
       </div>
 
-      <form id="listingForm" class="post-form">
-        <div class="type-switch">
-          <label class="type-option selected"><input type="radio" name="type" value="lost" checked><span>⌕</span><b data-i18n="lost">Потерял</b></label>
-          <label class="type-option"><input type="radio" name="type" value="found"><span>✓</span><b data-i18n="found">Нашёл</b></label>
-        </div>
-        <div class="form-grid">
-          <label><span data-i18n="fieldTitle">Название вещи *</span><input name="title" required maxlength="80" placeholder="Например: Чёрный кошелёк"></label>
-          <label><span data-i18n="fieldCategory">Категория *</span>
-            <select name="category" required>
-              <option value="" data-i18n="choose">Выберите категорию</option>
-              <option value="Документы" data-i18n="catDocs">Документы</option>
-              <option value="Электроника" data-i18n="catTech">Электроника</option>
-              <option value="Одежда и сумки" data-i18n="catClothes">Одежда и сумки</option>
-              <option value="Ключи" data-i18n="catKeys">Ключи</option>
-              <option value="Животные" data-i18n="catPets">Животные</option>
-              <option value="Другое" data-i18n="catOther">Другое</option>
-            </select>
-          </label>
-          <label class="full"><span data-i18n="fieldDescription">Описание</span><textarea name="description" rows="3" maxlength="1000"></textarea></label>
-          <label><span data-i18n="fieldLocation">Место *</span><input name="location" required maxlength="120" placeholder="Город, район, улица"></label>
-          <label><span data-i18n="fieldContact">Контакт для связи *</span><input name="contact" required maxlength="120" placeholder="+998... или Telegram"></label>
-          <label class="full"><span data-i18n="fieldPhoto">Фото (необязательно)</span><input name="photo" type="file" accept="image/*"><small data-i18n="photoHint">До 5 МБ.</small></label>
-        </div>
-        <button class="btn submit-btn" id="submitBtn" type="submit" data-i18n="publish">Опубликовать объявление →</button>
-        <p class="form-message" id="formMessage"></p>
+      <div class="form-grid">
+        <label>
+          <span data-i18n="titleLabel">Название вещи *</span>
+          <input id="listingTitle" required maxlength="100" placeholder="Например: iPhone 13">
+        </label>
+
+        <label>
+          <span data-i18n="categoryLabel">Категория *</span>
+          <select id="listingCategory" required>
+            <option value="" data-i18n="chooseCategory">Выберите категорию</option>
+            <option value="electronics" data-i18n="electronics">Электроника</option>
+            <option value="documents" data-i18n="documents">Документы</option>
+            <option value="keys" data-i18n="keys">Ключи</option>
+            <option value="clothes" data-i18n="clothes">Одежда</option>
+            <option value="pets" data-i18n="pets">Животные</option>
+            <option value="other" data-i18n="other">Другое</option>
+          </select>
+        </label>
+
+        <label class="full">
+          <span data-i18n="descriptionLabel">Описание *</span>
+          <textarea id="listingDescription" required maxlength="1500" placeholder="Опишите вещь подробнее..."></textarea>
+        </label>
+
+        <label>
+          <span data-i18n="locationLabel">Место *</span>
+          <input id="listingLocation" required maxlength="150" placeholder="Например: Ташкент, Чиланзар">
+        </label>
+
+        <label>
+          <span data-i18n="contactLabel">Контакт *</span>
+          <input id="listingContact" required maxlength="100" placeholder="Телефон или Telegram">
+        </label>
+
+        <label class="full">
+          <span data-i18n="photoLabel">Фотография</span>
+          <input id="listingImage" type="file" accept="image/jpeg,image/png,image/webp">
+          <small data-i18n="photoHint">JPG, PNG или WEBP. Максимум 5 МБ.</small>
+        </label>
+      </div>
+
+      <button class="btn submit-btn" id="submitButton" type="submit" data-i18n="submit">Опубликовать объявление</button>
+      <p class="form-message" id="formMessage"></p>
+    </form>
+  </section>
+
+  <section class="section listings-section" id="listings">
+    <div class="section-heading">
+      <div>
+        <div class="eyebrow dark">FIND IT</div>
+        <h2 data-i18n="allListings">Последние объявления</h2>
+      </div>
+      <span class="section-count" id="resultCount">0</span>
+    </div>
+
+    <div class="filters">
+      <input id="searchInput" type="search" placeholder="Поиск объявлений...">
+      <select id="typeFilter">
+        <option value="all" data-i18n="allTypes">Все объявления</option>
+        <option value="lost" data-i18n="lost">Потеряно</option>
+        <option value="found" data-i18n="found">Найдено</option>
+      </select>
+      <select id="categoryFilter">
+        <option value="all" data-i18n="allCategories">Все категории</option>
+        <option value="electronics" data-i18n="electronics">Электроника</option>
+        <option value="documents" data-i18n="documents">Документы</option>
+        <option value="keys" data-i18n="keys">Ключи</option>
+        <option value="clothes" data-i18n="clothes">Одежда</option>
+        <option value="pets" data-i18n="pets">Животные</option>
+        <option value="other" data-i18n="other">Другое</option>
+      </select>
+    </div>
+
+    <div class="listings-grid" id="listingsGrid">
+      <p data-i18n="loading">Загрузка объявлений...</p>
+    </div>
+  </section>
+
+  <section class="how" id="how">
+    <div class="eyebrow dark">HOW IT WORKS</div>
+    <h2 data-i18n="howTitle">Найти вещь стало проще</h2>
+    <div class="steps">
+      <div><b>01</b><h3 data-i18n="step1Title">Создай объявление</h3><p data-i18n="step1Text">Расскажи, что потерял или нашёл.</p></div>
+      <div><b>02</b><h3 data-i18n="step2Title">Найди совпадение</h3><p data-i18n="step2Text">Ищи объявления других людей.</p></div>
+      <div><b>03</b><h3 data-i18n="step3Title">Свяжись</h3><p data-i18n="step3Text">Свяжись с человеком и верни вещь.</p></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <a href="#" class="brand"><span class="brand-mark">T</span> TOPILDI</a>
+  <p>© 2026 TOPILDI. <span data-i18n="footer">Помогаем находить потерянное.</span></p>
+</footer>
+
+<div class="modal hidden" id="authModal">
+  <div class="modal-card">
+    <button class="modal-close" id="closeAuth">×</button>
+
+    <div id="emailStep">
+      <div class="brand modal-brand"><span class="brand-mark">T</span> TOPILDI</div>
+      <h2 data-i18n="authTitle">Вход в аккаунт</h2>
+      <p data-i18n="authDescription">Введите email, чтобы получить код.</p>
+      <form id="emailForm">
+        <label data-i18n="emailLabel">Электронная почта</label>
+        <input id="emailInput" type="email" required placeholder="example@gmail.com">
+        <button class="btn submit-btn" type="submit" id="sendCodeButton" data-i18n="sendCode">Получить код</button>
       </form>
-    </section>
+    </div>
 
-    <section class="section listings-section" id="listings">
-      <div class="section-heading">
-        <div><span class="eyebrow dark" data-i18n="feedEyebrow">СВЕЖИЕ ИСТОРИИ</span><h2 data-i18n="feedTitle">Объявления</h2></div>
-        <span class="section-count" id="listingCount">0</span>
-      </div>
-      <div class="filters">
-        <div class="search-box"><span>⌕</span><input id="searchInput" data-i18n-placeholder="searchPlaceholder" placeholder="Поиск по названию или месту..."></div>
-        <select id="typeFilter">
-          <option value="all" data-i18n="allTypes">Все объявления</option>
-          <option value="lost" data-i18n="lostOnly">Потерянные</option>
-          <option value="found" data-i18n="foundOnly">Найденные</option>
-        </select>
-        <select id="categoryFilter">
-          <option value="all" data-i18n="allCategories">Все категории</option>
-          <option value="Документы" data-i18n="catDocs">Документы</option>
-          <option value="Электроника" data-i18n="catTech">Электроника</option>
-          <option value="Одежда и сумки" data-i18n="catClothes">Одежда и сумки</option>
-          <option value="Ключи" data-i18n="catKeys">Ключи</option>
-          <option value="Животные" data-i18n="catPets">Животные</option>
-          <option value="Другое" data-i18n="catOther">Другое</option>
-        </select>
-      </div>
-      <div id="listingsGrid" class="listings-grid"><div class="loading">Загружаем объявления...</div></div>
-    </section>
+    <div id="codeStep" class="hidden">
+      <h2 data-i18n="codeTitle">Подтвердите email</h2>
+      <p data-i18n="codeDescription">Введите шестизначный код из письма.</p>
+      <form id="codeForm">
+        <input id="codeInput" type="text" inputmode="numeric" maxlength="6" pattern="[0-9]{6}" required placeholder="000000">
+        <button class="btn submit-btn" type="submit" data-i18n="verify">Подтвердить</button>
+      </form>
+      <button class="text-button" id="backToEmail" data-i18n="back">Назад</button>
+    </div>
 
-    <section class="how" id="how">
-      <div><span class="eyebrow">TOPILDI</span><h2 data-i18n="howTitle">Добрые дела начинаются с простого шага.</h2></div>
-      <div class="steps">
-        <div><b>01</b><h3 data-i18n="step1Title">Опубликуй</h3><p data-i18n="step1Text">Расскажи, что потерял или нашёл.</p></div>
-        <div><b>02</b><h3 data-i18n="step2Title">Найди</h3><p data-i18n="step2Text">Ищи объявления или жди отклика.</p></div>
-        <div><b>03</b><h3 data-i18n="step3Title">Верни</h3><p data-i18n="step3Text">Помоги вещи вернуться домой.</p></div>
-      </div>
-    </section>
-  </main>
+    <p class="form-message" id="authMessage"></p>
+  </div>
+</div>
 
-  <footer>
-    <a class="brand" href="#"><span class="brand-mark">T</span> TOPILDI</a>
-    <span data-i18n="footerText">Каждая находка — чья-то радость.</span>
-    <span>© 2026 TOPILDI</span>
-  </footer>
-
-  <script src="script.js"></script>
+<script src="script.js?v=1000"></script>
 </body>
 </html>
